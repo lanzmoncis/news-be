@@ -1,5 +1,6 @@
 const express = require("express");
 const getTopics = require("./controllers/controller");
+const error500 = require("./error-handling-middleware/error-handling-middleware");
 
 const app = express();
 
@@ -11,8 +12,6 @@ app.use((req, res, next) => {
 
 app.get("/api/topics", getTopics);
 
-app.use((err, req, res, next) => {
-  res.status(500).send({ err });
-});
+app.use(error500);
 
 module.exports = app;
