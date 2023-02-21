@@ -1,5 +1,5 @@
 const express = require("express");
-const getTopics = require("./controllers/controller");
+const { getTopics, getArticles } = require("./controllers/controller");
 const {
   serverError,
   notFoundError,
@@ -8,6 +8,8 @@ const {
 const app = express();
 
 app.get("/api/topics", getTopics);
+
+app.get("/api/articles", getArticles);
 
 app.all("/*", notFoundError);
 app.use(serverError);
