@@ -2,7 +2,7 @@ const request = require("supertest");
 const app = require("../app");
 const db = require("../db/connection");
 const seed = require("../db/seeds/seed");
-
+const toBeSorted = require("jest-sorted");
 const data = require("../db/data/test-data/index");
 
 afterAll(() => {
@@ -38,6 +38,52 @@ describe("GET/api/topics", () => {
       .then(({ body }) => {
         console.log(body);
         expect(body.msg).toBe("Path not found");
+      });
+  });
+});
+
+describe("GET/api/articles", () => {
+  it("Responds with an error if path is not found", () => {
+    return request(app)
+      .get("/anything")
+      .expect(404)
+      .then(({ body }) => {
+        console.log(body);
+        expect(body.msg).toBe("Path not found");
+      });
+  });
+
+  it("Responds with an array from the articles data", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body }) => {
+        const { articles } = body;
+        expect(articles).toBeInstanceOf(Array);
+        expect(articles.length).toBeGreaterThan(0);
+        articles.forEach((article) => {
+          expect(article).toMatchObject({
+            author: expect.any(String),
+            title: expect.any(String),
+            article_id: expect.any(Number),
+            topic: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            article_img_url: expect.any(String),
+            comment_count: expect.any(String),
+          });
+        });
+      });
+  });
+
+  it("Array should be sorted in a descending order", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body }) => {
+        const articles = body.articles;
+        articles.map((article) => article.created_at);
+        expect(articles).toBeSorted({ descending: true });
       });
   });
 });
