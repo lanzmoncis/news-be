@@ -9,7 +9,6 @@ const fetchTopics = () => {
 };
 
 const fetchArticles = () => {
-  console.log("IM HERE!");
   const queryString = `SELECT articles.*, COUNT(comments.article_id) AS comment_count
   FROM articles
   LEFT JOIN comments ON articles.article_id = comments.article_id

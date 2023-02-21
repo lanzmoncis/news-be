@@ -30,29 +30,9 @@ describe("GET/api/topics", () => {
         });
       });
   });
-
-  it("Responds with an error if path is not found", () => {
-    return request(app)
-      .get("/anything")
-      .expect(404)
-      .then(({ body }) => {
-        console.log(body);
-        expect(body.msg).toBe("Path not found");
-      });
-  });
 });
 
 describe("GET/api/articles", () => {
-  it("Responds with an error if path is not found", () => {
-    return request(app)
-      .get("/anything")
-      .expect(404)
-      .then(({ body }) => {
-        console.log(body);
-        expect(body.msg).toBe("Path not found");
-      });
-  });
-
   it("Responds with an array from the articles data", () => {
     return request(app)
       .get("/api/articles")
@@ -60,7 +40,7 @@ describe("GET/api/articles", () => {
       .then(({ body }) => {
         const { articles } = body;
         expect(articles).toBeInstanceOf(Array);
-        expect(articles.length).toBeGreaterThan(0);
+        expect(articles.length).toBe(12);
         articles.forEach((article) => {
           expect(article).toMatchObject({
             author: expect.any(String),
@@ -84,6 +64,17 @@ describe("GET/api/articles", () => {
         const articles = body.articles;
         articles.map((article) => article.created_at);
         expect(articles).toBeSorted({ descending: true });
+      });
+  });
+});
+
+describe("Error Endpoint not found", () => {
+  it("Responds with an error if path is not found", () => {
+    return request(app)
+      .get("/api/anything")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Path not found");
       });
   });
 });

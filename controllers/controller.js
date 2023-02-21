@@ -13,7 +13,6 @@ const getTopics = (req, res, next) => {
 const getArticles = (req, res, next) => {
   fetchArticles()
     .then((articles) => {
-      console.log(articles);
       res.status(200).send({ articles });
     })
     .catch((err) => {
