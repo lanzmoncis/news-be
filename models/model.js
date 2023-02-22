@@ -20,4 +20,24 @@ const fetchArticles = () => {
   });
 };
 
-module.exports = { fetchTopics, fetchArticles };
+const fetchArticlesById = (article_id) => {
+  if (isNaN(article_id)) {
+    return Promise.reject({ status: 400, msg: "Bad Request" });
+  }
+
+  const queryString = `SELECT * FROM articles WHERE article_id = $1`;
+  const value = [article_id];
+
+  return db.query(queryString, value).then((articleById) => {
+    if (articleById.rows.length === 0) {
+      return Promise.reject({ status: 404, msg: "ID not Found" });
+    }
+    return articleById.rows[0];
+  });
+};
+
+module.exports = {
+  fetchTopics,
+  fetchArticles,
+  fetchArticlesById,
+};
