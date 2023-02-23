@@ -3,6 +3,7 @@ const {
   getTopics,
   getArticles,
   getArticlesById,
+  getArticleComments,
 } = require("./controllers/controller");
 const {
   serverError,
@@ -17,6 +18,8 @@ app.get("/api/topics", getTopics);
 app.get("/api/articles", getArticles);
 
 app.get("/api/articles/:article_id", getArticlesById);
+
+app.get("/api/articles/:article_id/comments", getArticleComments);
 
 app.all("/*", notFoundError);
 app.use(customError);

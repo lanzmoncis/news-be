@@ -121,7 +121,7 @@ describe("GET/api/articles/:article_id", () => {
         .expect(404)
         .then(({ body }) => {
           const message = body.msg;
-          expect(message).toBe("ID not found");
+          expect(message).toBe("Not Found");
         });
     });
 
@@ -132,6 +132,70 @@ describe("GET/api/articles/:article_id", () => {
         .then(({ body }) => {
           const message = body.msg;
           expect(message).toBe("Bad Request");
+        });
+    });
+
+    it("Responds with an error if path is not found", () => {
+      return request(app)
+        .get("/anything")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Path not found");
+        });
+    });
+  });
+});
+
+describe("GET/api/articles/:article_id/comments", () => {
+  describe("200 Status", () => {
+    it("Responds with the relative comments from the given article_id", () => {
+      return request(app)
+        .get("/api/articles/1/comments")
+        .expect(200)
+        .then(({ body }) => {
+          const { commentsById } = body;
+          expect(commentsById).toBeInstanceOf(Array);
+          commentsById.forEach((comment) => {
+            expect(comment).toMatchObject({
+              comment_id: expect.any(Number),
+              votes: expect.any(Number),
+              created_at: expect.any(String),
+              author: expect.any(String),
+              body: expect.any(String),
+              article_id: expect.any(Number),
+            });
+          });
+        });
+    });
+  });
+
+  describe("Error Handling Test", () => {
+    it("Responds with an error given with a valid id but have no comments", () => {
+      return request(app)
+        .get("/api/articles/2/comments")
+        .expect(404)
+        .then(({ body }) => {
+          const message = body.msg;
+          expect(message).toBe("Not Found");
+        });
+    });
+
+    it("Responds with an error if given with an invalid article_id", () => {
+      return request(app)
+        .get("/api/articles/anything/comments")
+        .expect(400)
+        .then(({ body }) => {
+          const message = body.msg;
+          expect(message).toBe("Bad Request");
+        });
+    });
+
+    it("Responds with an error if path is not found", () => {
+      return request(app)
+        .get("/articles/anything/commentst")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Path not found");
         });
     });
   });

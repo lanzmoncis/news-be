@@ -30,9 +30,28 @@ const fetchArticlesById = (article_id) => {
 
   return db.query(queryString, value).then((articleById) => {
     if (articleById.rows.length === 0) {
-      return Promise.reject({ status: 404, msg: "ID not Found" });
+      return Promise.reject({ status: 404, msg: "Not Found" });
     }
     return articleById.rows[0];
+  });
+};
+
+const fetchArticleComments = (article_id) => {
+  if (isNaN(article_id)) {
+    return Promise.reject({ status: 400, msg: "Bad Request" });
+  }
+
+  const queryString = `SELECT comment_id, votes, created_at, author, body, article_id
+  FROM comments
+  WHERE article_id = $1
+  ORDER BY created_at DESC;`;
+  const value = [article_id];
+
+  return db.query(queryString, value).then((commentsById) => {
+    if (commentsById.rows.length === 0) {
+      return Promise.reject({ status: 404, msg: "Not Found" });
+    }
+    return commentsById.rows;
   });
 };
 
@@ -40,4 +59,5 @@ module.exports = {
   fetchTopics,
   fetchArticles,
   fetchArticlesById,
+  fetchArticleComments,
 };
