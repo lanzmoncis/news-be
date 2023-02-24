@@ -45,6 +45,7 @@ const getArticleComments = (req, res, next) => {
 
   Promise.all([idChecker, selectsComments])
     .then(([article, commentsById]) => {
+      console.log(commentsById);
       res.status(200).send({ commentsById });
     })
     .catch((err) => {

@@ -48,9 +48,6 @@ const fetchArticleComments = (article_id) => {
   const value = [article_id];
 
   return db.query(queryString, value).then((commentsById) => {
-    // if (commentsById.rows.length === 0) {
-    //   return Promise.reject({ status: 404, msg: "Not Found" });
-    // }
     return commentsById.rows;
   });
 };
