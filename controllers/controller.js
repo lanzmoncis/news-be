@@ -1,4 +1,10 @@
-const { fetchTopics, fetchArticles } = require("../models/model");
+const articles = require("../db/data/test-data/articles");
+const {
+  fetchTopics,
+  fetchArticles,
+  fetchArticlesById,
+  fetchArticleComments,
+} = require("../models/model");
 
 const getTopics = (req, res, next) => {
   fetchTopics()
@@ -20,4 +26,35 @@ const getArticles = (req, res, next) => {
     });
 };
 
-module.exports = { getTopics, getArticles };
+const getArticlesById = (req, res, next) => {
+  const { article_id } = req.params;
+
+  fetchArticlesById(article_id)
+    .then((articleById) => {
+      res.status(200).send({ articleById });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+const getArticleComments = (req, res, next) => {
+  const { article_id } = req.params;
+  const idChecker = fetchArticlesById(article_id);
+  const selectsComments = fetchArticleComments(article_id);
+
+  Promise.all([idChecker, selectsComments])
+    .then(([article, commentsById]) => {
+      res.status(200).send({ commentsById });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+module.exports = {
+  getTopics,
+  getArticles,
+  getArticlesById,
+  getArticleComments,
+};
