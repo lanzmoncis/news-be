@@ -1,9 +1,9 @@
-const articles = require("../db/data/test-data/articles");
 const {
   fetchTopics,
   fetchArticles,
   fetchArticlesById,
   fetchArticleComments,
+  insertComment,
 } = require("../models/model");
 
 const getTopics = (req, res, next) => {
@@ -52,9 +52,23 @@ const getArticleComments = (req, res, next) => {
     });
 };
 
+const postComment = (req, res, next) => {
+  const { username, body } = req.body;
+  const { article_id } = req.params;
+
+  insertComment(username, body, article_id)
+    .then((comment) => {
+      res.status(201).send({ comment });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
 module.exports = {
   getTopics,
   getArticles,
   getArticlesById,
   getArticleComments,
+  postComment,
 };

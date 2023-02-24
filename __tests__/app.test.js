@@ -219,3 +219,88 @@ describe("Error Endpoint not found", () => {
       });
   });
 });
+
+describe("POST/api/articles/:article_id/comments", () => {
+  describe("Responds with a comment from a valid username", () => {
+    it("Responds with the posted comment", () => {
+      const testComment = {
+        username: "butter_bridge",
+        body: "test comment",
+      };
+      return request(app)
+        .post("/api/articles/2/comments")
+        .send(testComment)
+        .expect(201)
+        .then(({ body }) => {
+          const { comment } = body;
+          expect(comment).toMatchObject({
+            comment_id: expect.any(Number),
+            author: "butter_bridge",
+            body: "test comment",
+            article_id: 2,
+            created_at: expect.any(String),
+            votes: 0,
+          });
+        });
+    });
+  });
+
+  describe("Error Handling Test", () => {
+    it("Responds with an error if given with an invalid username", () => {
+      const testComment = {
+        username: "butter_bridge1",
+        body: "test comment",
+      };
+      return request(app)
+        .post("/api/articles/2/comments")
+        .send(testComment)
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Not Found");
+        });
+    });
+
+    it("Responds with an error if given with an invalid article_id", () => {
+      const testComment = {
+        username: "butter_bridge",
+        body: "test comment",
+      };
+      return request(app)
+        .post("/api/articles/anything/comments")
+        .send(testComment)
+        .expect(400)
+        .then(({ body }) => {
+          const message = body.msg;
+          expect(message).toBe("Bad Request");
+        });
+    });
+
+    it("Responds with an error if given with a valid ID but non-existent", () => {
+      const testComment = {
+        username: "butter_bridge",
+        body: "test comment",
+      };
+      return request(app)
+        .post("/api/articles/1000/comments")
+        .send(testComment)
+        .expect(404)
+        .then(({ body }) => {
+          const message = body.msg;
+          expect(message).toBe("Not Found");
+        });
+    });
+    it("Responds with an error if send if missing a required fields", () => {
+      const testComment = {
+        username: "butter_bridge",
+      };
+      return request(app)
+        .post("/api/articles/1/comments")
+        .send(testComment)
+        .expect(400)
+        .then(({ body }) => {
+          const message = body.msg;
+          expect(message).toBe("Bad Request");
+        });
+    });
+  });
+});
