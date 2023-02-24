@@ -40,9 +40,11 @@ const getArticlesById = (req, res, next) => {
 
 const getArticleComments = (req, res, next) => {
   const { article_id } = req.params;
+  const idChecker = fetchArticlesById(article_id);
+  const selectsComments = fetchArticleComments(article_id);
 
-  fetchArticleComments(article_id)
-    .then((commentsById) => {
+  Promise.all([idChecker, selectsComments])
+    .then(([article, commentsById]) => {
       res.status(200).send({ commentsById });
     })
     .catch((err) => {

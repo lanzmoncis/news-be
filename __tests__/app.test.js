@@ -170,13 +170,12 @@ describe("GET/api/articles/:article_id/comments", () => {
   });
 
   describe("Error Handling Test", () => {
-    it("Responds with an error given with a valid id but have no comments", () => {
+    it("Responds with an empty array of comments if article exist but has no comments", () => {
       return request(app)
         .get("/api/articles/2/comments")
-        .expect(404)
+        .expect(200)
         .then(({ body }) => {
-          const message = body.msg;
-          expect(message).toBe("Not Found");
+          expect(body.commentsById).toEqual([]);
         });
     });
 
@@ -196,6 +195,15 @@ describe("GET/api/articles/:article_id/comments", () => {
         .expect(404)
         .then(({ body }) => {
           expect(body.msg).toBe("Path not found");
+        });
+    });
+
+    it("Responds with an error if valid but not existing ID", () => {
+      return request(app)
+        .get("/api/articles/1000/comments")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Not Found");
         });
     });
   });
