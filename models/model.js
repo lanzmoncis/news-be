@@ -64,10 +64,46 @@ const insertComment = (username, body, article_id) => {
   });
 };
 
+const updateArticle = (inc_votes, article_id) => {
+  if (isNaN(inc_votes)) {
+    return Promise.reject({ status: 400, msg: "Bad Request" });
+  }
+  const queryString = `
+  UPDATE articles
+  SET votes = votes + $1
+  WHERE article_id = $2
+  RETURNING *;
+`;
+
+  const value = [inc_votes, article_id];
+
+  return db.query(queryString, value).then((result) => {
+    if (result.rows.length === 0) {
+      return Promise.reject({ status: 404, msg: "Not Found" });
+    }
+    return result.rows[0];
+  });
+};
+
+const fetchUsers = () => {
+  const queryString = `SELECT * FROM users`;
+
+  return db
+    .query(queryString)
+    .then((users) => {
+      return users.rows;
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
 module.exports = {
   fetchTopics,
   fetchArticles,
   fetchArticlesById,
   fetchArticleComments,
   insertComment,
+  updateArticle,
+  fetchUsers,
 };

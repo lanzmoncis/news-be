@@ -4,6 +4,8 @@ const {
   fetchArticlesById,
   fetchArticleComments,
   insertComment,
+  updateArticle,
+  fetchUsers,
 } = require("../models/model");
 
 const getTopics = (req, res, next) => {
@@ -65,10 +67,31 @@ const postComment = (req, res, next) => {
     });
 };
 
+const patchArticles = (req, res, next) => {
+  const { article_id } = req.params;
+  const { inc_votes } = req.body;
+
+  updateArticle(inc_votes, article_id)
+    .then((result) => {
+      res.status(200).send({ result });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+const getUsers = (req, res, next) => {
+  fetchUsers().then((users) => {
+    res.status(200).send({ users });
+  });
+};
+
 module.exports = {
   getTopics,
   getArticles,
   getArticlesById,
   getArticleComments,
   postComment,
+  patchArticles,
+  getUsers,
 };
