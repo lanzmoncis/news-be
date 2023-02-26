@@ -209,6 +209,162 @@ describe("GET/api/articles/:article_id/comments", () => {
   });
 });
 
+describe("POST/api/articles/:article_id/comments", () => {
+  describe("200 Status", () => {
+    it("Responds with the posted comment", () => {
+      const testComment = {
+        username: "butter_bridge",
+        body: "test comment",
+      };
+      return request(app)
+        .post("/api/articles/2/comments")
+        .send(testComment)
+        .expect(201)
+        .then(({ body }) => {
+          const { comment } = body;
+          expect(comment).toMatchObject({
+            comment_id: expect.any(Number),
+            author: "butter_bridge",
+            body: "test comment",
+            article_id: 2,
+            created_at: expect.any(String),
+            votes: 0,
+          });
+        });
+    });
+  });
+
+  describe("Error Handling Test", () => {
+    it("Responds with an error if given with an invalid username", () => {
+      const testComment = {
+        username: "butter_bridge1",
+        body: "test comment",
+      };
+      return request(app)
+        .post("/api/articles/2/comments")
+        .send(testComment)
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Not Found");
+        });
+    });
+
+    it("Responds with an error if given with an invalid article_id", () => {
+      const testComment = {
+        username: "butter_bridge",
+        body: "test comment",
+      };
+      return request(app)
+        .post("/api/articles/anything/comments")
+        .send(testComment)
+        .expect(400)
+        .then(({ body }) => {
+          const message = body.msg;
+          expect(message).toBe("Bad Request");
+        });
+    });
+
+    it("Responds with an error if given with a valid ID but non-existent", () => {
+      const testComment = {
+        username: "butter_bridge",
+        body: "test comment",
+      };
+      return request(app)
+        .post("/api/articles/1000/comments")
+        .send(testComment)
+        .expect(404)
+        .then(({ body }) => {
+          const message = body.msg;
+          expect(message).toBe("Not Found");
+        });
+    });
+    it("Responds with an error if send if missing a required fields", () => {
+      const testComment = {
+        username: "butter_bridge",
+      };
+      return request(app)
+        .post("/api/articles/1/comments")
+        .send(testComment)
+        .expect(400)
+        .then(({ body }) => {
+          const message = body.msg;
+          expect(message).toBe("Bad Request");
+        });
+    });
+  });
+});
+
+describe("PATCH/api/articles/:article_id", () => {
+  describe("200 Status", () => {
+    it("Responds with an updated article", () => {
+      return request(app)
+        .patch("/api/articles/1")
+        .send({ inc_votes: -99 })
+        .expect(200)
+        .then(({ body }) => {
+          const article = body.result;
+          expect(article.article_id).toBe(1);
+          expect(article.votes).toBe(1);
+        });
+    });
+  });
+
+  describe("Error Handling Test", () => {
+    it("Responds with an error if given a not valid ID", () => {
+      return request(app)
+        .patch("/api/articles/1")
+        .send({ inc_votes: "anything" })
+        .expect(400)
+        .then(({ body }) => {
+          const message = body.msg;
+          expect(message).toBe("Bad Request");
+        });
+    });
+
+    it("Responds with an error when given with non-existent article_id", () => {
+      return request(app)
+        .patch("/api/articles/1000")
+        .send({ inc_votes: 1 })
+        .expect(404)
+        .then(({ body }) => {
+          const message = body.msg;
+          expect(message).toBe("Not Found");
+        });
+    });
+
+    it("Responds with an error if missing a required fields", () => {
+      return request(app)
+        .patch("/api/articles/1")
+        .send({})
+        .expect(400)
+        .then(({ body }) => {
+          const message = body.msg;
+          expect(message).toBe("Bad Request");
+        });
+    });
+  });
+});
+
+describe("GET/api/users", () => {
+  it("Responds with an array of users", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({ body }) => {
+        const users = body.users;
+        expect(users).toBeInstanceOf(Array);
+        expect(users).toHaveLength(4);
+        users.forEach((user) => {
+          expect(user).toMatchObject({
+            username: expect.any(String),
+            name: expect.any(String),
+            avatar_url: expect.any(String),
+          });
+        });
+      });
+  });
+});
+
 describe("Error Endpoint not found", () => {
   it("Responds with an error if path is not found", () => {
     return request(app)

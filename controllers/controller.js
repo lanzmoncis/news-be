@@ -1,9 +1,11 @@
-const articles = require("../db/data/test-data/articles");
 const {
   fetchTopics,
   fetchArticles,
   fetchArticlesById,
   fetchArticleComments,
+  insertComment,
+  updateArticle,
+  fetchUsers,
 } = require("../models/model");
 
 const getTopics = (req, res, next) => {
@@ -52,9 +54,44 @@ const getArticleComments = (req, res, next) => {
     });
 };
 
+const postComment = (req, res, next) => {
+  const { username, body } = req.body;
+  const { article_id } = req.params;
+
+  insertComment(username, body, article_id)
+    .then((comment) => {
+      res.status(201).send({ comment });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+const patchArticles = (req, res, next) => {
+  const { article_id } = req.params;
+  const { inc_votes } = req.body;
+
+  updateArticle(inc_votes, article_id)
+    .then((result) => {
+      res.status(200).send({ result });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+const getUsers = (req, res, next) => {
+  fetchUsers().then((users) => {
+    res.status(200).send({ users });
+  });
+};
+
 module.exports = {
   getTopics,
   getArticles,
   getArticlesById,
   getArticleComments,
+  postComment,
+  patchArticles,
+  getUsers,
 };
