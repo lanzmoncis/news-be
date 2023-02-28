@@ -97,7 +97,6 @@ const deleteCommentsById = (req, res, next) => {
       res.status(204).send({});
     })
     .catch((err) => {
-      console.log(err);
       next(err);
     });
 };
