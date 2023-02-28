@@ -6,6 +6,7 @@ const {
   insertComment,
   updateArticle,
   fetchUsers,
+  deleteComments,
 } = require("../models/model");
 
 const getTopics = (req, res, next) => {
@@ -19,7 +20,9 @@ const getTopics = (req, res, next) => {
 };
 
 const getArticles = (req, res, next) => {
-  fetchArticles()
+  const { topic, sort_by, order } = req.query;
+
+  fetchArticles(topic, sort_by, order)
     .then((articles) => {
       res.status(200).send({ articles });
     })
@@ -86,6 +89,18 @@ const getUsers = (req, res, next) => {
   });
 };
 
+const deleteCommentsById = (req, res, next) => {
+  const { comment_id } = req.params;
+
+  deleteComments(comment_id)
+    .then(() => {
+      res.status(204).send({});
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
 module.exports = {
   getTopics,
   getArticles,
@@ -94,4 +109,5 @@ module.exports = {
   postComment,
   patchArticles,
   getUsers,
+  deleteCommentsById,
 };

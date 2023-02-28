@@ -365,6 +365,19 @@ describe("GET/api/users", () => {
   });
 });
 
+describe("DELETE/api/comments/:comment_id", () => {
+  describe("204 Status", () => {
+    it("Responds with an empty object if successfully deleted a comment", () => {
+      return request(app)
+        .delete("/api/comments/1")
+        .expect(204)
+        .then(({ body }) => {
+          expect(body).toEqual({});
+        });
+    });
+  });
+});
+
 describe("Error Endpoint not found", () => {
   it("Responds with an error if path is not found", () => {
     return request(app)

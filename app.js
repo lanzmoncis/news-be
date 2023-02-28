@@ -7,6 +7,7 @@ const {
   postComment,
   patchArticles,
   getUsers,
+  deleteCommentsById,
 } = require("./controllers/controller");
 const {
   serverError,
@@ -32,6 +33,8 @@ app.post("/api/articles/:article_id/comments", postComment);
 app.patch("/api/articles/:article_id", patchArticles);
 
 app.get("/api/users", getUsers);
+
+app.delete("/api/comments/:comments_id", deleteCommentsById);
 
 app.all("/*", notFoundError);
 app.use(psqlError);

@@ -14,7 +14,6 @@ const fetchArticles = () => {
   LEFT JOIN comments ON articles.article_id = comments.article_id
   GROUP BY articles.article_id
   ORDER BY articles.created_at DESC;`;
-
   return db.query(queryString).then((articles) => {
     return articles.rows;
   });
@@ -98,6 +97,12 @@ const fetchUsers = () => {
     });
 };
 
+const deleteComments = (comment_id) => {
+  const value = [comment_id];
+  const queryString = `DELETE FROM comments WHERE comment_id = $1`;
+  return db.query(queryString, value);
+};
+
 module.exports = {
   fetchTopics,
   fetchArticles,
@@ -106,4 +111,5 @@ module.exports = {
   insertComment,
   updateArticle,
   fetchUsers,
+  deleteComments,
 };
