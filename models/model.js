@@ -98,9 +98,21 @@ const fetchUsers = () => {
 };
 
 const deleteComments = (comment_id) => {
+  if (isNaN(comment_id)) {
+    return Promise.reject({ status: 400, msg: "Bad Request" });
+  }
   const value = [comment_id];
   const queryString = `DELETE FROM comments WHERE comment_id = $1`;
-  return db.query(queryString, value);
+
+  return db
+    .query(`SELECT * FROM comments WHERE comment_id = $1`, value)
+    .then((result) => {
+      if (result.rows.length === 0) {
+        return Promise.reject({ status: 404, msg: "Not Found" });
+      } else {
+        return db.query(queryString, value);
+      }
+    });
 };
 
 module.exports = {

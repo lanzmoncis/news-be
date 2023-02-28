@@ -34,7 +34,7 @@ app.patch("/api/articles/:article_id", patchArticles);
 
 app.get("/api/users", getUsers);
 
-app.delete("/api/comments/:comments_id", deleteCommentsById);
+app.delete("/api/comments/:comment_id", deleteCommentsById);
 
 app.all("/*", notFoundError);
 app.use(psqlError);

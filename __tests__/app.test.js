@@ -137,7 +137,7 @@ describe("GET/api/articles/:article_id", () => {
 
     it("Responds with an error if path is not found", () => {
       return request(app)
-        .get("/anything")
+        .get("/anything/anything/123asd")
         .expect(404)
         .then(({ body }) => {
           expect(body.msg).toBe("Path not found");
@@ -373,6 +373,35 @@ describe("DELETE/api/comments/:comment_id", () => {
         .expect(204)
         .then(({ body }) => {
           expect(body).toEqual({});
+        });
+    });
+  });
+
+  describe("Error Handling Test", () => {
+    it("Responds with an error if given a not valid comment_id", () => {
+      return request(app)
+        .delete("/api/comments/asdfesd")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Bad Request");
+        });
+    });
+
+    it("Responds with an error if given a valid but non-existent comment_id", () => {
+      return request(app)
+        .delete("/api/comments/10000")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Not Found");
+        });
+    });
+
+    it("Responds with an error if path is not found", () => {
+      return request(app)
+        .delete("/anything/anything/123asd")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Path not found");
         });
     });
   });
