@@ -8,15 +8,55 @@ const fetchTopics = () => {
   });
 };
 
-const fetchArticles = () => {
-  const queryString = `SELECT articles.*, COUNT(comments.article_id) AS comment_count
-  FROM articles
-  LEFT JOIN comments ON articles.article_id = comments.article_id
-  GROUP BY articles.article_id
-  ORDER BY articles.created_at DESC;`;
-  return db.query(queryString).then((articles) => {
+const fetchArticles = (topic, sort_by = "created_at", order = "desc") => {
+  const validSortColumns = [
+    "article_id",
+    "title",
+    "topic",
+    "author",
+    "body",
+    "created_at",
+    "votes",
+    "article_image_url",
+  ];
+
+  const validOrderOptions = ["asc", "desc"];
+
+  if (!validSortColumns.includes(sort_by.toLowerCase())) {
+    return Promise.reject({ status: 400, msg: "Bad Request" });
+  }
+
+  if (!validOrderOptions.includes(order.toLowerCase())) {
+    return Promise.reject({ status: 400, msg: "Bad Request" });
+  }
+
+  const value = [];
+
+  let queryString = `SELECT articles.*, COUNT(comments.article_id) AS comment_count
+                      FROM articles
+                      LEFT JOIN comments ON articles.article_id = comments.article_id`;
+  if (topic) {
+    value.push(topic);
+    queryString += ` WHERE articles.topic = $1`;
+  }
+  queryString += ` GROUP BY articles.article_id
+                     ORDER BY ${sort_by} ${order}`;
+
+  return db.query(queryString, value).then((articles) => {
+    if (articles.rows.length === 0) {
+      return Promise.reject({ status: 404, msg: "Not Found" });
+    }
     return articles.rows;
   });
+
+  // const queryString = `SELECT articles.*, COUNT(comments.article_id) AS comment_count
+  // FROM articles
+  // LEFT JOIN comments ON articles.article_id = comments.article_id
+  // GROUP BY articles.article_id
+  // ORDER BY articles.created_at DESC;`;
+  // return db.query(queryString).then((articles) => {
+  //   return articles.rows;
+  // });
 };
 
 const fetchArticlesById = (article_id) => {
@@ -24,7 +64,14 @@ const fetchArticlesById = (article_id) => {
     return Promise.reject({ status: 400, msg: "Bad Request" });
   }
 
-  const queryString = `SELECT * FROM articles WHERE article_id = $1`;
+  // const queryString = `SELECT * FROM articles WHERE article_id = $1`;
+
+  const queryString = `SELECT articles.*, COUNT(comments.article_id) AS comment_count
+  FROM articles
+  LEFT JOIN comments ON articles.article_id = comments.article_id
+  WHERE articles.article_id = $1
+  GROUP BY articles.article_id`;
+
   const value = [article_id];
 
   return db.query(queryString, value).then((articleById) => {

@@ -417,3 +417,107 @@ describe("Error Endpoint not found", () => {
       });
   });
 });
+
+// QUERY TESTS
+describe("GET/api/articles", () => {
+  describe("200 Status", () => {
+    it("Responds with an array with a query of topic", () => {
+      return request(app)
+        .get("/api/articles?topic=cats")
+        .expect(200)
+        .then(({ body }) => {
+          const { articles } = body;
+          expect(articles).toBeInstanceOf(Array);
+          expect(articles.length).toBeGreaterThan(0);
+          expect(
+            articles.every(
+              (article, i) => i === 0 || article.topic >= articles[i - 1].topic
+            )
+          ).toBe(true);
+        });
+    });
+
+    it("Responds with an array with a query of sort_by ", () => {
+      return request(app)
+        .get("/api/articles?sort_by=title")
+        .expect(200)
+        .then(({ body }) => {
+          console.log(body);
+        });
+    });
+
+    it("Responds with an array with a query of order", () => {
+      return request(app)
+        .get("/api/articles?order=asc")
+        .expect(200)
+        .then(({ body }) => {
+          const { articles } = body;
+          expect(articles).toBeInstanceOf(Array);
+          expect(articles.length).toBeGreaterThan(0);
+          expect(
+            articles.every(
+              (article, i) =>
+                i === 0 || article.created_at <= articles[i - 1].created_at
+            )
+          ).toBe(false);
+        });
+    });
+  });
+
+  describe("Error Handling Test", () => {
+    it("Responds with an error if given with an invalid topic", () => {
+      return request(app)
+        .get("/api/articles?topic=anything")
+        .expect(404)
+        .then(({ body }) => {
+          const message = body.msg;
+          expect(message).toBe("Not Found");
+        });
+    });
+
+    it("Responds with an error if given with an invalid sort_by query", () => {
+      return request(app)
+        .get("/api/articles?sort_by=invalid")
+        .expect(400)
+        .then(({ body }) => {
+          const message = body.msg;
+          expect(message).toBe("Bad Request");
+        });
+    });
+
+    it("Responds with an error if given with an invalid order query", () => {
+      return request(app)
+        .get("/api/articles?order=invalid")
+        .expect(400)
+        .then(({ body }) => {
+          const message = body.msg;
+          expect(message).toBe("Bad Request");
+        });
+    });
+  });
+});
+
+// Comment Count Feature
+describe("GET/api/articles/:article_id", () => {
+  describe("200 Status", () => {
+    it("Responds with an array with the corresponding comment counts", () => {
+      return request(app)
+        .get("/api/articles/2")
+        .expect(200)
+        .then(({ body }) => {
+          const { articleById } = body;
+          expect(articleById).toBeInstanceOf(Object);
+          expect(articleById).toMatchObject({
+            author: expect.any(String),
+            title: expect.any(String),
+            article_id: expect.any(Number),
+            topic: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            article_img_url: expect.any(String),
+            comment_count: expect.any(String),
+          });
+        });
+    });
+  });
+});
