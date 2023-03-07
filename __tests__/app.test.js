@@ -442,7 +442,14 @@ describe("GET/api/articles", () => {
         .get("/api/articles?sort_by=title")
         .expect(200)
         .then(({ body }) => {
-          console.log(body);
+          const { articles } = body;
+          expect(articles).toBeInstanceOf(Array);
+          expect(articles.length).toBeGreaterThan(0);
+          expect(
+            articles.every(
+              (article, i) => i === 0 || article.title <= articles[i - 1].title
+            )
+          ).toBe(true);
         });
     });
 
@@ -457,9 +464,26 @@ describe("GET/api/articles", () => {
           expect(
             articles.every(
               (article, i) =>
+                i === 0 || article.created_at >= articles[i - 1].created_at
+            )
+          ).toBe(true);
+        });
+    });
+
+    it("responds with a list of articles in descending order if order=desc", () => {
+      return request(app)
+        .get("/api/articles?order=desc")
+        .expect(200)
+        .then(({ body }) => {
+          const { articles } = body;
+          expect(articles).toBeInstanceOf(Array);
+          expect(articles.length).toBeGreaterThan(0);
+          expect(
+            articles.every(
+              (article, i) =>
                 i === 0 || article.created_at <= articles[i - 1].created_at
             )
-          ).toBe(false);
+          ).toBe(true);
         });
     });
   });
