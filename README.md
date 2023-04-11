@@ -8,7 +8,7 @@ The NC-News backend API is a RESTful API that serves as the backend for the Nc N
 
 ## Prerequisite
 
-Install Postman or Insomnia you can refer to this doc for installation
+Install Postman or Insomnia you can refer to this docs for installation
 
 Postman: https://www.postman.com/downloads/
 
@@ -21,6 +21,7 @@ Insomnia: https://docs.insomnia.rest
 https://nc-backend.onrender.com/api/articles/
 
 • Sort articles by votes, author, title or dates by querying this endpoint:
+
 https://nc-backend.onrender.com/api/articles?sort_by=
 
 • Change order to ascending or descending. by querying this endpoint:
