@@ -8,7 +8,7 @@ The NC-News backend API is a RESTful API that serves as the backend for the Nc N
 
 ## Prerequisite
 
-Install Postman or Insomnia you can refer to this docs for installation
+Install Postman or Insomnia you can refer to this doc for installation of Postman or Insomnia.
 
 Postman: https://www.postman.com/downloads/
 
