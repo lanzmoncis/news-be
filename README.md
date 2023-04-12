@@ -18,31 +18,45 @@ Insomnia: https://docs.insomnia.rest
 
 • Browse articles using Postman or Insomnia by querying this endpoint:
 
-https://nc-backend.onrender.com/api/articles/
+```
+GET: https://nc-backend.onrender.com/api/articles
+```
 
 • Sort articles by votes, author, title or dates by querying this endpoint:
 
-https://nc-backend.onrender.com/api/articles?sort_by=
+valid sort_by: votes, author, title, dates, created_at
+
+```
+GET: https://nc-backend.onrender.com/api/articles?sort_by={sort options}
+```
 
 • Change order to ascending or descending. by querying this endpoint:
 
-https://nc-backend.onrender.com/api/articles?order=desc
+```
+GET: https://nc-backend.onrender.com/api/articles?order=desc
+```
 
-• Get article by id by querying this endpoint:
+• Get the article by id by querying this endpoint:
 
-https://nc-backend.onrender.com/api/articles/:id
+```
+GET: https://nc-backend.onrender.com/api/articles/:id
+```
 
-• Get each article comments by querying this endpoint:
+• Get each article's comments by querying this endpoint:
 
-https://nc-backend.onrender.com/api/articles/:id/comments
+```
+GET: https://nc-backend.onrender.com/api/articles/:id/comments
+```
 
-• Post comment by querying this endpoint:
+• Post a comment by querying this endpoint:
 
-https://nc-backend.onrender.com/api/articles/:id/comments
+```
+POST: https://nc-backend.onrender.com/api/articles/:id/comments
+```
 
 valid usernames: tickle122, grumpy19, happyamy2016, cooljmessy, weegembump, jessjelly
 
-post comment using POST method on Postman or Insomnia using this object:
+post comment using the POST method on Postman or Insomnia using this object:
 
 ```
   { "username": "tickle122",
@@ -50,9 +64,12 @@ post comment using POST method on Postman or Insomnia using this object:
 ```
 
 • Patch vote on an article by querying this endpoint:
-https://nc-backend.onrender.com/api/articles/:id
 
-patch vote using PATCH method on Postman or Insomnia using this object:
+```
+ PATCH: https://nc-backend.onrender.com/api/articles/:id
+```
+
+patch vote using the PATCH method on Postman or Insomnia using this object:
 
 ```
 {"inc_votes": anynumber }
@@ -60,7 +77,9 @@ patch vote using PATCH method on Postman or Insomnia using this object:
 
 • Delete comment on an article by querying this endpoint:
 
-https://nc-backend.onrender.com/api/comments/:comment_id
+```
+DELETE: https://nc-backend.onrender.com/api/comments/:comment_id
+```
 
 ## Built With
 
