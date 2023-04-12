@@ -91,4 +91,4 @@ DELETE: https://nc-backend.onrender.com/api/comments/:comment_id
 
 ## Note
 
-This is the backend side of the NC-News web app you can check out the client side of this application here: https://github.com/lanzmoncis/NC-News-BE
+This is the backend side of the NC-News web app you can check out the client side of this application here: https://github.com/lanzmoncis/NC-News-FE
