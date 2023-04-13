@@ -2,6 +2,8 @@
 
 ### Hosted Link: https://nc-backend.onrender.com/api/articles/
 
+<img width="1512" alt="Screenshot 2023-04-13 at 15 10 24" src="https://user-images.githubusercontent.com/103965235/231786411-f503325c-2bb9-487e-ae44-eee833126846.png">
+
 ## Description
 
 The NC-News backend API is a RESTful API that serves as the backend for the Nc News web application. It is built using Node.js and Express.js and uses PostgreSQL as its database. The API allows users to interact with the application by performing CRUD (Create, Read, Update, Delete) operations on articles, comments, and users.
