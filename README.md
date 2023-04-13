@@ -18,7 +18,7 @@ Insomnia: https://docs.insomnia.rest
 
 ## Usage
 
-• Browse articles using Postman or Insomnia by querying this endpoint:
+• Get all articles using Postman or Insomnia by querying this endpoint:
 
 ```
 GET: https://nc-backend.onrender.com/api/articles
